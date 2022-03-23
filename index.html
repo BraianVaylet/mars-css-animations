@@ -1,0 +1,584 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    :root {
+      --sky-color: rgb(146, 51, 27);
+      --character-color: transparent;      
+      --floor-color: rgb(185, 107, 4);
+      --floor2-color: rgb(187, 69, 1);
+      --floor3-color: rgb(126, 47, 2);
+      --floor4-color: rgb(126, 83, 2);
+      --alien-color-primary: rgb(70, 180, 70);
+      --alien-color-secondary: rgb(180, 145, 81);
+      --cloud1-color: rgb(247, 248, 197);      
+      --black: rgb(36, 36, 36);
+      --shadow: rgba(0,0,0,0.65);
+    }
+
+    body {
+      display: grid;
+      height: 100vh;
+      margin: 0;
+      place-items: center;
+      width: 100%;
+      counter-reset: score;
+    }
+
+    .phone {
+      background: var(--sky-color);
+      background-image: radial-gradient(white 1px, transparent .5px);
+      background-size: 50px 60px;
+      border: 8px solid black;
+      border-radius: 40px;
+      box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
+      height: 600px;
+      position: relative;
+      width: 300px;
+    }
+
+    input[type=checkbox] {
+      appearance: none;
+      cursor: pointer;
+      height: 50px;
+      margin: 0;
+      position: relative;
+      top: 0;
+      width: 80px;
+      z-index: 2;
+    }
+
+    input[type=checkbox]:focus {
+      appearance: none;
+      outline: none;
+    }
+
+    input:checked {
+      counter-increment: score;
+    }
+
+    .score::after {
+      content: counter(score);
+    }
+
+    .layer-1 {
+      background: var(--character-color);
+      bottom: 0;
+      height: 450px;
+      position: absolute;
+      right: 60px;
+      width: 80px;
+      z-index: 1;
+
+      animation-name: character__jump;
+      animation-duration: 1.5s;
+      animation-iteration-count: infinite;
+      animation-timing-function: ease-in-out;
+    }
+
+    .layer-1 input[type=checkbox] {
+      animation-name: character__input;
+      animation-duration: 1.5s;
+      animation-timing-function: ease-in-out;
+      animation-iteration-count: infinite;
+    }
+
+    .layer-2 {
+      background: var(--character-color);
+      bottom: 0;
+      height: 450px;
+      position: absolute;
+      left: 60px;
+      width: 80px;
+      border-radius: 5px 5px 0 0;
+      z-index: 2;
+
+      animation-name: character__jump;
+      animation-duration: 1s;
+      animation-iteration-count: infinite;
+      animation-timing-function: ease-in-out;
+    }
+
+    .layer-2 input[type=checkbox] {
+      animation-name: character__input;
+      animation-duration: 1s;
+      animation-timing-function: ease-in-out;
+      animation-iteration-count: infinite;
+    }
+
+    .layer-3 {
+      background: var(--floor-color);
+      bottom: 0;
+      height: 400px;
+      left: 0;
+      margin: 0 auto;
+      position: absolute;
+      right: 0;
+      width: 220px;
+      border-radius: 2%;
+      z-index: 3;    
+      background-color: #e5e5f7;
+      box-shadow: inset -7px -3px 38px -8px var(--shadow);
+      background-image: 
+        repeating-radial-gradient( circle at 0 0, transparent 0, var(--floor2-color) 20px ),
+        repeating-linear-gradient( var(--floor3-color), var(--floor-color) );      
+    }
+    
+    .layer-4 {
+      background: var(--character-color);
+      bottom: 0;
+      height: 350px;
+      left: 15px;
+      position: absolute;
+      width: 80px;
+      z-index: 4;
+
+      animation-name: character__jump;
+      animation-duration: .75s;
+      animation-iteration-count: infinite;
+      animation-timing-function: ease-in-out;
+    }
+
+    .layer-4 input[type=checkbox] {
+      animation-name: character__input;
+      animation-duration: .75s;
+      animation-timing-function: ease-in-out;
+      animation-iteration-count: infinite;
+    }
+
+    .layer-5 {
+      background: var(--floor2-color);
+      bottom: 0;
+      height: 300px;
+      position: absolute;
+      width: 200px;
+      border-radius: 2%;
+      z-index: 5;
+      box-shadow: inset -7px -3px 38px -8px var(--shadow);
+      background-image: 
+        repeating-radial-gradient( circle at 0 0, transparent 0, var(--floor-color) 30px ),
+        repeating-linear-gradient( var(--floor3-color), var(--floor2-color) );
+      border-radius: 2% 2% 2% 40px;
+    }
+
+    .layer-6 {
+      background: var(--character-color);
+      bottom: 0;
+      height: 250px;
+      position: absolute;
+      right: 30px;
+      width: 80px;
+      z-index: 6;  
+      
+      animation-name: character__jump;
+      animation-duration: 1.25s;
+      animation-iteration-count: infinite;
+      animation-timing-function: ease-in-out;
+    }
+
+    .layer-6 input[type=checkbox] {
+      animation-name: character__input;
+      animation-duration: 1.25s;
+      animation-timing-function: ease-in-out;
+      animation-iteration-count: infinite;
+    }
+
+    .layer-7 {
+      background: var(--floor-color);
+      bottom: 0;
+      height: 200px;
+      position: absolute;
+      right: 0;
+      width: 150px;
+      z-index: 7;
+      border-radius: 2% 2% 40px 2%;
+      box-shadow: inset -7px -3px 38px -8px var(--shadow);
+      background-image: 
+        repeating-radial-gradient( circle at 0 0, transparent 0, var(--floor2-color) 50px ),
+        repeating-linear-gradient( var(--floor3-color), var(--floor4-color) );
+    }
+  
+    .layer-8 {
+      bottom: 0;
+      height: 120px;
+      left: 0;
+      margin: 0 auto;
+      position: absolute;
+      right: 0;
+      width: 200px;      
+      z-index: 8;
+    }
+
+    .layer-8__left-lawn {
+      background: var(--black);
+      border-radius: 40px 40px 0 0;
+      bottom: 0;
+      display: inline-block;
+      height: 70%;
+      left: 0;
+      position: absolute;
+      width: 80px;
+      box-shadow: 0px -92px 296px -62px var(--shadow);
+    }
+
+    .layer-8__center-lawn {      
+      background: var(--black);
+      border-radius: 40px 40px 0 0;
+      bottom: 0;
+      display: inline-block;
+      height: 100%;
+      left: 60px;
+      position: absolute;
+      width: 80px;
+      box-shadow: 0px -92px 296px -62px var(--shadow);
+    }
+
+    .layer-8__right-lawn {
+      background: var(--black);
+      border-radius: 40px 40px 0 0;
+      bottom: 0;
+      display: inline-block;
+      height: 80%;
+      left: 130px;
+      position: absolute;
+      width: 80px;
+      box-shadow: 0px -92px 296px -62px var(--shadow);
+    }
+
+    .layer-9 {
+      bottom: 0;
+      height: 100px;
+      position: absolute;
+      width: 120px;
+      z-index: 9;
+    }
+
+    .layer-9__left-cloud { 
+      background: var(--cloud1-color);
+      border-radius: 40px 40px 0 30px;
+      display: inline-block;
+      height: 100%;
+      left: 0;
+      position: absolute;
+      width: 80px;
+    }
+
+    .layer-9__right-cloud { 
+      background: var(--cloud1-color);
+      border-radius: 0 40px 30px 0;
+      bottom: 0;
+      display: inline-block;
+      height: 60%;
+      left: 80px;
+      position: absolute;
+      width: 40px;
+    }
+
+    .layer-10 {
+      bottom: 0;
+      height: 100px;
+      position: absolute;
+      right: 0;
+      width: 120px;
+      z-index: 10;      
+    }
+
+    .layer-10__left-cloud { 
+      background: var(--cloud1-color);
+      border-radius: 40px 0 0 30px;
+      bottom: 0;
+      display: inline-block;
+      height: 60%;
+      right: 80px;
+      position: absolute;
+      width: 40px;
+    }
+
+    .layer-10__right-cloud {
+      background: var(--cloud1-color);
+      border-radius: 40px 40px 30px 0;
+      display: inline-block;
+      height: 100%;
+      right: 0px;
+      position: absolute;
+      width: 80px;
+    }
+
+    .left-ear--outer {
+      background-color: var(--alien-color-primary);
+      border-radius: 90% 0% 10% 0% ;
+      width: 20px;
+      height: 30px;
+      position: absolute;
+      left: 10px;
+      top: 0;
+    }
+
+    .left-ear--inner {
+      background-color: var(--alien-color-secondary);
+      border-radius: 90% 0% 10% 0% ;
+      width: 12px;
+      height: 25px;
+      position: absolute;
+      left: 15px;
+      top: 5px;
+    }
+
+    .right-ear--outer {
+      background-color: var(--alien-color-primary);
+      border-radius: 0% 90% 0% 10% ;
+      width: 20px;
+      height: 30px;
+      position: absolute;
+      right: 10px;
+      top: 0;
+    }
+
+    .right-ear--inner {
+      background-color: var(--alien-color-secondary);
+      border-radius: 0% 90% 0% 10% ;
+      width: 12px;
+      height: 25px;
+      position: absolute;
+      right: 15px;
+      top: 5px;
+    }
+
+    .head {
+      background-color: var(--alien-color-primary);
+      border-radius: 40%;
+      width: 100%;
+      height: 80px;
+      margin: 0 auto;
+      position: absolute;
+      top: 20px;
+      left: 0;
+      right: 0;
+    }
+
+    .head__eye {
+      background-color: var(--black);      
+      width: 12px;
+      height: 7px;
+      position: absolute;
+      top: 15px;
+
+      animation-name: blink__eyes;
+      animation-duration: 2s;
+      animation-iteration-count: infinite;
+    }
+
+    .head__eye--iris {
+      background-color: red;      
+      border-radius: 50%;
+      width: 5px;
+      height: 5px;
+      position: absolute;
+      left: 3px;
+    }
+    
+    .head__eye--left {
+      border-radius: 0% 90% 90% 90%;
+      left: 20px;
+    }
+    .head__eye--right {
+      border-radius: 90% 0% 90% 90%;
+      right: 20px;
+    }
+
+    .head__mouth {
+      background-color: var(--black);      
+      width: 20%;
+      height: 2px;
+      border-radius: 50%;
+      border-bottom: .5px;
+      border-bottom-color: white;
+      border-bottom-style: solid;
+      position: absolute;
+      top: 25px;
+      right: 40%;
+      left: 40%;
+
+      animation-name: blink__mouth;
+      animation-duration: 4s;
+      animation-iteration-count: infinite;
+    }
+
+    .title {
+      color: white;
+      text-align: center;
+      font-weight: 900;
+      font-size: 30px;
+      font-family: monospace;
+      letter-spacing: 5px;
+      display: flex;
+      justify-content: center;
+      margin: 45px 0 10px;
+    }
+
+    .score {      
+      color: white;
+      font-family: monospace;
+      font-size: 16px;
+      margin: 0;
+      text-align: center;
+    }
+
+    @keyframes blink__eyes {
+      0% {
+        height: 7px;
+      }
+      5% {
+        transform: translate(0px, 2px);
+        height: 1px;
+      }
+      10% {
+        transform: translate(0px, 0px);
+        height: 7px;
+      }
+    }
+
+    @keyframes blink__mouth {
+      0% {
+        border-bottom: 1px;
+      }
+      5% {
+        border-bottom: 0px;
+      }
+      10% {
+        border-bottom: 1px;
+      }
+    }
+
+    @keyframes character__jump {
+      0% {
+        bottom: 0;
+      }
+      25% {
+        bottom: -80px;
+      }
+      100% {
+        bottom: 0;
+      }
+    }
+
+    @keyframes character__input {
+      0% {
+        top: 0;
+      }
+      25% {
+        top: 80px;
+      }
+      100% {
+        top: 0;
+      }
+    }
+
+  </style>
+</head>
+<body>
+  <div class="phone">
+    <!-- Separo en capas -->
+    <!-- bunny 1 -->
+    <div class="layer-1">
+      <input type="checkbox" />
+      <div class="left-ear--outer"></div>
+      <div class="left-ear--inner"></div>
+      <div class="right-ear--outer"></div>
+      <div class="right-ear--inner"></div>
+      <div class="head">
+        <div class="head__eye head__eye--left">
+          <div class="head__eye--iris"></div>
+        </div>
+        <div class="head__eye head__eye--right">
+          <div class="head__eye--iris"></div>
+        </div>
+        <div class="head__mouth"></div>
+      </div>
+    </div> 
+    <!-- bunny 2 -->
+    <div class="layer-2">
+      <input type="checkbox" />
+      <div class="left-ear--outer"></div>
+      <div class="left-ear--inner"></div>
+      <div class="right-ear--outer"></div>
+      <div class="right-ear--inner"></div>
+      <div class="head">
+        <div class="head__eye head__eye--left">
+          <div class="head__eye--iris"></div>
+        </div>
+        <div class="head__eye head__eye--right">
+          <div class="head__eye--iris"></div>
+        </div>
+        <div class="head__mouth"></div>
+      </div>
+    </div> 
+    <!-- wall 1 -->
+    <div class="layer-3"></div> 
+    <!-- bunny 3 -->
+    <div class="layer-4">
+      <input type="checkbox" />
+      <div class="left-ear--outer"></div>
+      <div class="left-ear--inner"></div>
+      <div class="right-ear--outer"></div>
+      <div class="right-ear--inner"></div>
+      <div class="head">
+        <div class="head__eye head__eye--left">
+          <div class="head__eye--iris"></div>
+        </div>
+        <div class="head__eye head__eye--right">
+          <div class="head__eye--iris"></div>
+        </div>
+        <div class="head__mouth"></div>
+      </div>
+    </div>
+    <!-- wall 2 -->
+    <div class="layer-5"></div> 
+    <!-- bunny 4 -->
+    <div class="layer-6">
+      <input type="checkbox" />
+      <div class="left-ear--outer"></div>
+      <div class="left-ear--inner"></div>
+      <div class="right-ear--outer"></div>
+      <div class="right-ear--inner"></div>
+      <div class="head">
+        <div class="head__eye head__eye--left">
+          <div class="head__eye--iris"></div>
+        </div>
+        <div class="head__eye head__eye--right">
+          <div class="head__eye--iris"></div>
+        </div>
+        <div class="head__mouth"></div>
+      </div>
+    </div>
+    <!-- wall 3 -->
+    <div class="layer-7"></div>
+    <!-- lawn 1 -->
+    <div class="layer-8">
+      <div class="layer-8__left-lawn"></div>
+      <div class="layer-8__center-lawn"></div>
+      <div class="layer-8__right-lawn"></div>
+    </div>
+    <!-- cloud 1 -->
+    <div class="layer-9">
+      <div class="layer-9__left-cloud"></div>
+      <div class="layer-9__right-cloud"></div>
+    </div>
+    <!-- cloud 2 -->
+    <div class="layer-10">
+      <div class="layer-10__left-cloud"></div>
+      <div class="layer-10__right-cloud"></div>
+    </div>
+    <!-- Score -->
+    <h1 class="title">
+      👽MARS
+    </h1>
+    <h2 class="score">Score: </h2>
+  </div>
+</body>
+</html>
